@@ -7,32 +7,35 @@ import {
     CardHeader,
     CardMedia,
     Typography,
-} from "@mui/material"
-import { Product } from "../../app/models/product"
+} from '@mui/material'
+import { Link } from 'react-router-dom'
+import { Product } from '../../app/models/product'
 
 interface Props {
     product: Product
 }
 
 export default function ProductCard({ product }: Props) {
+    // @ts-ignore
+    // @ts-ignore
     return (
         <Card>
             <CardHeader
                 avatar={
-                    <Avatar sx={{ bgcolor: "secondary.main" }}>
+                    <Avatar sx={{ bgcolor: 'secondary.main' }}>
                         {product.name.charAt(0).toUpperCase()}
                     </Avatar>
                 }
                 title={product.name}
                 titleTypographyProps={{
-                    sx: { fontWeight: "bold", color: "primary.main" },
+                    sx: { fontWeight: 'bold', color: 'primary.main' },
                 }}
             />
             <CardMedia
                 sx={{
                     height: 140,
-                    backgroundSize: "contain",
-                    bgcolor: "primary.light",
+                    backgroundSize: 'contain',
+                    bgcolor: 'primary.light',
                 }}
                 image={product.pictureUrl}
                 title={product.name}
@@ -47,7 +50,13 @@ export default function ProductCard({ product }: Props) {
             </CardContent>
             <CardActions>
                 <Button size="small">Add to Cart</Button>
-                <Button size="small">View</Button>
+                <Button
+                    component={Link}
+                    to={`/catalog/${product.id}`}
+                    size="small"
+                >
+                    View
+                </Button>
             </CardActions>
         </Card>
     )
