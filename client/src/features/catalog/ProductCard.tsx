@@ -16,8 +16,6 @@ interface Props {
 }
 
 export default function ProductCard({ product }: Props) {
-    // @ts-ignore
-    // @ts-ignore
     return (
         <Card>
             <CardHeader
