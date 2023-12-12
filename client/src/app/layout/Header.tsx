@@ -10,7 +10,7 @@ import {
     Typography,
 } from '@mui/material'
 import React from 'react'
-import { NavLink } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { ShoppingCart } from '@mui/icons-material'
 
 const middleLinks = [
@@ -80,6 +80,8 @@ export default function Header({ handleThemeChange, darkMode }: Props) {
                         edge="start"
                         color="inherit"
                         sx={{ mr: 2 }}
+                        component={Link}
+                        to={'/basket'}
                     >
                         <Badge badgeContent="4" color="secondary">
                             <ShoppingCart />

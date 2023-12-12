@@ -29,7 +29,6 @@ function ProductPage() {
     }, [id])
 
     if (loading) return <LoadingComponent message='Loading product ...' />
-
     if (!product) return <NotFound />
 
     return (
