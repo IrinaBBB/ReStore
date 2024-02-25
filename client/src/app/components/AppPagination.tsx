@@ -1,58 +1,37 @@
-import { Container, CssBaseline, ThemeProvider, createTheme } from '@mui/material'
-import { useCallback, useEffect, useState } from 'react'
-import { Outlet } from 'react-router-dom'
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import { useAppDispatch } from '../store/configureStore'
-import { fetchBasketAsync } from '../../features/basket/basketSlice'
-import { fetchCurrentUser } from '../../features/account/accountSlice'
-import Header from '../layout/Header'
-import LoadingComponent from '../layout/LoadingComponent.tsx'
+import { Box, Typography, Pagination } from "@mui/material";
+import { MetaData } from '../models/pagination';
+import { useState } from 'react';
 
-function App() {
-    const dispatch = useAppDispatch()
-    const [loading, setLoading] = useState(true)
-
-    const initApp = useCallback(async () => {
-        try {
-            await dispatch(fetchCurrentUser())
-            await dispatch(fetchBasketAsync())
-        } catch (error) {
-            console.log(error)
-        }
-    }, [dispatch])
-
-    useEffect(() => {
-        initApp().then(() => setLoading(false))
-    }, [initApp])
-
-    const [darkMode, setDarkMode] = useState(false)
-    const palleteType = darkMode ? 'dark' : 'light'
-    const theme = createTheme({
-        palette: {
-            mode: palleteType,
-            background: {
-                default: (palleteType === 'light') ? '#eaeaea' : '#121212',
-            },
-        },
-    })
-
-    function handleThemeChange() {
-        setDarkMode(!darkMode)
-    }
-
-    if (loading) return <LoadingComponent message='Initiasing app...' />
-
-    return (
-        <ThemeProvider theme={theme}>
-            <ToastContainer position='bottom-right' hideProgressBar theme='colored' />
-            <CssBaseline />
-            <Header darkMode={darkMode} handleThemeChange={handleThemeChange} />
-            <Container>
-                <Outlet />
-            </Container>
-        </ThemeProvider>
-    )
+interface Props {
+    metaData: MetaData,
+    onPageChange: (page: number) => void;
 }
 
-export default App
+export default function AppPagination({metaData, onPageChange}: Props) {
+    const {pageSize, currentPage, totalCount, totalPages} = metaData;
+    const [pageNumber, setPageNumber] = useState(currentPage);
+
+    function handlePageChange(page: number) {
+        setPageNumber(page);
+        onPageChange(page);
+    }
+
+    return (
+        <Box display='flex' justifyContent='space-between' alignItems='center' sx={{ marginBottom: 3 }}>
+            <Typography variant='body1'>
+                Displaying {(currentPage-1)*pageSize+1}-
+                {currentPage*pageSize > totalCount!
+                    ? totalCount
+                    : currentPage * pageSize
+                } of {totalCount} results
+            </Typography>
+            <Pagination
+                color='secondary'
+                size='large'
+                count={totalPages}
+                page={pageNumber}
+                onChange={(_e, page) => handlePageChange(page)}
+            />
+        </Box>
+    )
+}

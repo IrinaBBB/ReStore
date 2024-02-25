@@ -12,6 +12,7 @@ import CheckoutPage from '../../features/checkout/CheckoutPage'
 import Login from '../../features/account/Login'
 import Register from '../../features/account/Register'
 import RequireAuth from './RequireAuth'
+import Inventory from '../../features/admin/Inventory.tsx'
 
 export const router = createBrowserRouter(([
     {
@@ -22,6 +23,12 @@ export const router = createBrowserRouter(([
                 element: <RequireAuth />, children: [
                     { path: '/checkout', element: <CheckoutPage /> },
                 ],
+            },
+            {
+                // admin routes
+                element: <RequireAuth roles={['Admin']} />, children: [
+                    { path: '/inventory', element: <Inventory /> },
+                ]
             },
             { path: '', element: <HomePage /> },
             { path: 'catalog', element: <Catalog /> },

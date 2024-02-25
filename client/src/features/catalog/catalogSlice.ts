@@ -1,8 +1,8 @@
-import { createAsyncThunk, createEntityAdapter, createSlice } from '@reduxjs/toolkit'
-import agent from '../../app/api/agent'
-import { Product, ProductParams } from '../../app/models/product'
-import { RootState } from '../../app/store/configureStore'
-import { MetaData } from '../../app/models/pagination'
+import { createAsyncThunk, createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+import agent from "../../app/api/agent";
+import { Product, ProductParams } from "../../app/models/product";
+import { RootState } from '../../app/store/configureStore';
+import { MetaData } from '../../app/models/pagination';
 
 interface CatalogState {
     productsLoaded: boolean;
@@ -45,7 +45,8 @@ export const fetchProductAsync = createAsyncThunk<Product, number>(
     'catalog/fetchProductAsync',
     async (productId, thunkAPI) => {
         try {
-            return await agent.Catalog.details(productId);
+            const product = await agent.Catalog.details(productId);
+            return product;
         } catch (error: any) {
             return thunkAPI.rejectWithValue({ error: error.data })
         }
@@ -98,6 +99,14 @@ export const catalogSlice = createSlice({
         },
         resetProductParams: (state) => {
             state.productParams = initParams()
+        },
+        setProduct: (state, action) => {
+            productsAdapter.upsertOne(state, action.payload);
+            state.productsLoaded = false;
+        },
+        removeProduct: (state, action) => {
+            productsAdapter.removeOne(state, action.payload);
+            state.productsLoaded = false;
         }
     },
     extraReducers: (builder => {
@@ -139,6 +148,6 @@ export const catalogSlice = createSlice({
     })
 })
 
-export const {setProductParams, resetProductParams, setMetaData, setPageNumber} = catalogSlice.actions;
+export const {setProductParams, resetProductParams, setMetaData, setPageNumber, setProduct, removeProduct} = catalogSlice.actions;
 
 export const productSelectors = productsAdapter.getSelectors((state: RootState) => state.catalog);
